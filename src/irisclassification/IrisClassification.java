@@ -5,13 +5,12 @@
  */
 package irisclassification;
 
+import org.neuroph.contrib.transfer.ExponentialLinearUnit;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.events.LearningEvent;
 import org.neuroph.core.events.LearningEventListener;
-import org.neuroph.core.transfer.TransferFunction;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
-import org.neuroph.util.TransferFunctionType;
 import org.neuroph.util.data.norm.Normalizer;
 import org.neuroph.util.data.norm.RangeNormalizer;
 
@@ -35,7 +34,19 @@ public class IrisClassification {
         irisData.shuffle();
         DataSet[] trainTest = irisData.createTrainingAndTestSubsets(60, 40);
         
-        MultiLayerPerceptron neuralNet = new MultilayerPerceptronELU(inputNum, 16, outputNum);
+        MultiLayerPerceptron neuralNetELU = new MultilayerPerceptronELU(new ExponentialLinearUnit(0.5), inputNum, 16, outputNum);
+        BackPropagation bpELU = neuralNetELU.getLearningRule();
+        bpELU.setLearningRate(0.6);
+        
+        bpELU.addListener(new LearningEventListener() {
+            @Override
+            public void handleLearningEvent(LearningEvent event) {
+                BackPropagation bp = (BackPropagation) event.getSource();
+                System.out.println("Iteration: "+bp.getCurrentIteration() + " Error: "+bp.getTotalNetworkError());
+            }
+        });
+        
+        MultiLayerPerceptron neuralNet = new MultiLayerPerceptron(inputNum, 16, outputNum);
         BackPropagation bp = neuralNet.getLearningRule();
         bp.setLearningRate(0.6);
         
@@ -47,7 +58,8 @@ public class IrisClassification {
             }
         });
         
-        neuralNet.learn(irisData); 
+        neuralNetELU.learn(irisData); 
+        neuralNet.learn(irisData);
         
         System.out.println("Done!");
     }
