@@ -9,7 +9,7 @@ This repository serves as a research about ELU activation function implementatio
 3. Run IrisClassification
 
 # Possible problems:
-If building NeurophFramework fails because of visrec-api. Solution is to clone and build https://github.com/JavaVisRec/visrec-api.git. After building it will stay in cache (on Windows OS - C:\Users\{User}\.m2\repository) and as such become available for building NeurophFramework.
+If building NeurophFramework fails because of visrec-api. Solution is to clone and build https://github.com/JavaVisRec/visrec-api.git. After building it will stay in cache (on Windows OS - C:\Users\\{User}\\.m2\repository) and as such become available for building NeurophFramework.
 
 Another problem that might pop up is failing tests, mainly following files:
 ```
