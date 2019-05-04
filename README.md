@@ -23,3 +23,5 @@ For the time being, just comment all the files.
 
 # Description
 This example tests multilayer perceptron network. One network uses ELU transfer function for its neurons while other uses sigmoid function. For a given set of hyperparameters it will give information about total iterations it took to minimise error and value of actual error. Usual result is that sigmoid function is better because it takes less iterations to reach better error value.
+
+Whole example is based on lectures from 11th to 13th February 2018 for course Applied artificial intelligence at FON Belgrade, Serbia.
