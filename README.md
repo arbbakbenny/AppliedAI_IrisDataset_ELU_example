@@ -5,8 +5,16 @@ This repository serves as a research about ELU activation function implementatio
 # How to use
 
 1. Clone https://github.com/arbbakbenny/NeurophFramework.git (this currently contains ELU function and neural net that uses it)
-2. Build using Netbeans by right clicking on project and choosing **Build with dependencies**
-3. Run IrisClassification
+2. Setup dependencies by righ clicking on project and choosing **Properties**. In **Libraries** add references to
+```
+logback-core-1.1.2.jar
+slf4j-api-1.7.5.jar
+slf4j-nop-1.7.6.jar
+neuroph-core-2.94.jar
+neuroph-contrib-2.96.jar
+```
+3. Build using Netbeans by right clicking on project and choosing **Build with dependencies**
+4. Run IrisClassification
 
 # Possible problems:
 If building NeurophFramework fails because of visrec-api. Solution is to clone and build https://github.com/JavaVisRec/visrec-api.git. After building it will stay in cache (on Windows OS - C:\Users\\{User}\\.m2\repository) and as such become available for building NeurophFramework.
