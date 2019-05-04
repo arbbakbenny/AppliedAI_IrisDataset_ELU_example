@@ -21,7 +21,7 @@ import org.neuroph.contrib.nnet.MultilayerPerceptronELU;
  */
 public class IrisClassification {
 
-    static int MAX_ITERATIONS = 200000;
+    static int MAX_ITERATIONS = 20000;
     
     /**
      * @param args the command line arguments
