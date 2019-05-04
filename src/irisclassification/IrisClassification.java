@@ -5,30 +5,33 @@
  */
 package irisclassification;
 
-import org.neuroph.contrib.transfer.ExponentialLinearUnit;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.events.LearningEvent;
 import org.neuroph.core.events.LearningEventListener;
-import org.neuroph.core.transfer.Sigmoid;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.data.norm.Normalizer;
 import org.neuroph.util.data.norm.RangeNormalizer;
 
+import org.neuroph.contrib.nnet.MultilayerPerceptronELU;
+
 /**
  *
- * @author student1
+ * @see https://arxiv.org/pdf/1804.02763.pdf
  */
 public class IrisClassification {
 
-    static int MAX_ITERATIONS = 20000;
+    static int MAX_ITERATIONS = 200000;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        double bpLearningRate = 0.03d;
+        double bpLearningRate = 1d;
+        double bpLearningRateELU = 1d;
+        
+        double eluAlpha = 1d;
         
         int inputNum=4;
         int outputNum=3;
@@ -40,42 +43,40 @@ public class IrisClassification {
         irisData.shuffle();
         DataSet[] trainTest = irisData.createTrainingAndTestSubsets(60, 40);
         
-        
-        MultiLayerPerceptron neuralNetELU = new MultilayerPerceptronELU(new ExponentialLinearUnit(0.1), inputNum, 16, outputNum);
+        //example of multilayer network with ELU for neuron transfer function
+        MultilayerPerceptronELU neuralNetELU = new MultilayerPerceptronELU(eluAlpha, inputNum, 16, outputNum);
         BackPropagation bpELU = neuralNetELU.getLearningRule();
-        bpELU.setLearningRate(bpLearningRate);
+        bpELU.setLearningRate(bpLearningRateELU);
         bpELU.setMaxIterations(MAX_ITERATIONS);
         bpELU.addListener(getListener("ELU"));
         neuralNetELU.learn(irisData); 
         
-        
-        //example of regular neural net with Sigmoid transfer
+        //example of multilayer neural net with Sigmoid transfer function
         MultiLayerPerceptron neuralNet = new MultiLayerPerceptron(inputNum, 16, outputNum);
         BackPropagation bp = neuralNet.getLearningRule();
-//        bp.setLearningRate(bpLearningRate);
-        bp.setLearningRate(0.6);
+        bp.setLearningRate(bpLearningRate);
         bp.setMaxIterations(MAX_ITERATIONS);
         bp.addListener(getListener("Sigmoid"));
         neuralNet.learn(irisData);
         
         
 
-        neuralNetELU = new MultilayerPerceptronELU(new ExponentialLinearUnit(0.1), inputNum, 16, 14, outputNum);
-        bpELU = neuralNetELU.getLearningRule();
-        bpELU.setLearningRate(bpLearningRate);
-        bpELU.setMaxIterations(MAX_ITERATIONS);
-        bpELU.addListener(getListener("ELU"));
-        neuralNetELU.learn(irisData); 
-        
-        
-        
-        
-        neuralNet = new MultiLayerPerceptron(inputNum, 16, 14, outputNum);
-        bp = neuralNet.getLearningRule();
-        bp.setLearningRate(0.6);
-        bp.setMaxIterations(MAX_ITERATIONS);
-        bp.addListener(getListener("Sigmoid"));
-        neuralNet.learn(irisData);
+//        neuralNetELU = new MultilayerPerceptronELU(eluAlpha, inputNum, 16, 14, outputNum);
+//        bpELU = neuralNetELU.getLearningRule();
+//        bpELU.setLearningRate(bpLearningRate);
+//        bpELU.setMaxIterations(MAX_ITERATIONS);
+//        bpELU.addListener(getListener("ELU"));
+//        neuralNetELU.learn(irisData); 
+//        
+//        
+//        
+//        
+//        neuralNet = new MultiLayerPerceptron(inputNum, 16, 14, outputNum);
+//        bp = neuralNet.getLearningRule();
+//        bp.setLearningRate(bpLearningRate);
+//        bp.setMaxIterations(MAX_ITERATIONS);
+//        bp.addListener(getListener("Sigmoid"));
+//        neuralNet.learn(irisData);
         
         
     }
