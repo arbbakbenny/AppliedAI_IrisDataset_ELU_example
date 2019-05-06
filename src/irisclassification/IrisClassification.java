@@ -5,15 +5,19 @@
  */
 package irisclassification;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.events.LearningEvent;
 import org.neuroph.core.events.LearningEventListener;
-import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.data.norm.Normalizer;
 import org.neuroph.util.data.norm.RangeNormalizer;
 
-import org.neuroph.contrib.nnet.MultilayerPerceptronELU;
+import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.contrib.transfer.ExponentialLinearUnit;
+import org.neuroph.core.input.WeightedSum;
+import org.neuroph.util.NeuronProperties;
 
 /**
  *
@@ -31,7 +35,7 @@ public class IrisClassification {
         double bpLearningRate = 1d;
         double bpLearningRateELU = 1d;
         
-        double eluAlpha = 1d;
+        double eluAlpha = 0.5d;
         
         int inputNum=4;
         int outputNum=3;
@@ -43,8 +47,20 @@ public class IrisClassification {
         irisData.shuffle();
         DataSet[] trainTest = irisData.createTrainingAndTestSubsets(60, 40);
         
+        NeuronProperties neuronProperties = new NeuronProperties();
+        neuronProperties.setProperty("useBias", true);
+        neuronProperties.setProperty("transferFunction", ExponentialLinearUnit.class);
+        neuronProperties.setProperty("transferFunctionAlpha", eluAlpha);
+        neuronProperties.setProperty("inputFunction", WeightedSum.class);
+        
         //example of multilayer network with ELU for neuron transfer function
-        MultilayerPerceptronELU neuralNetELU = new MultilayerPerceptronELU(eluAlpha, inputNum, 16, outputNum);
+        
+        List<Integer> nnetParams = new ArrayList<>();
+        nnetParams.add(inputNum);
+        nnetParams.add(16);
+        nnetParams.add(outputNum);
+        
+        MultiLayerPerceptron neuralNetELU = new MultiLayerPerceptron(nnetParams, neuronProperties);
         BackPropagation bpELU = neuralNetELU.getLearningRule();
         bpELU.setLearningRate(bpLearningRateELU);
         bpELU.setMaxIterations(MAX_ITERATIONS);
@@ -58,26 +74,6 @@ public class IrisClassification {
         bp.setMaxIterations(MAX_ITERATIONS);
         bp.addListener(getListener("Sigmoid"));
         neuralNet.learn(irisData);
-        
-        
-
-//        neuralNetELU = new MultilayerPerceptronELU(eluAlpha, inputNum, 16, 14, outputNum);
-//        bpELU = neuralNetELU.getLearningRule();
-//        bpELU.setLearningRate(bpLearningRate);
-//        bpELU.setMaxIterations(MAX_ITERATIONS);
-//        bpELU.addListener(getListener("ELU"));
-//        neuralNetELU.learn(irisData); 
-//        
-//        
-//        
-//        
-//        neuralNet = new MultiLayerPerceptron(inputNum, 16, 14, outputNum);
-//        bp = neuralNet.getLearningRule();
-//        bp.setLearningRate(bpLearningRate);
-//        bp.setMaxIterations(MAX_ITERATIONS);
-//        bp.addListener(getListener("Sigmoid"));
-//        neuralNet.learn(irisData);
-        
         
     }
     
